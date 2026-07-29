@@ -78,12 +78,10 @@
     font-size:28px;
     font-weight:700;
     letter-spacing:0.005em;
-    background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
     margin-bottom:20px;
+    white-space:pre;
   }
+  h1 span{ transition:none; }
 
   .discord-btn{
     display:flex;align-items:center;gap:8px;
@@ -191,38 +189,6 @@
   .invite-list a .arrow{opacity:0.5;transition:transform .2s;}
   .invite-list a:hover .arrow{transform:translateX(2px);opacity:1;}
 
-  /* music toggle */
-  .music-btn{
-    position:fixed;
-    top:18px;right:18px;
-    z-index:5;
-    width:42px;height:42px;
-    border-radius:50%;
-    background: var(--panel);
-    border:1px solid var(--panel-border);
-    color:var(--accent);
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-    transition: border-color .2s, box-shadow .2s, transform .2s;
-  }
-  .music-btn:hover{border-color:var(--accent);box-shadow:0 0 16px rgba(176,132,245,0.25);transform:scale(1.05);}
-  .music-btn svg{width:18px;height:18px;color:var(--accent);opacity:1;transition:opacity .25s;}
-  .music-btn.paused svg{opacity:0.45;}
-  .music-label{
-    position:fixed;
-    top:22px;right:68px;
-    z-index:5;
-    font-size:11px;
-    color:var(--muted);
-    letter-spacing:0.02em;
-    max-width:140px;
-    text-align:right;
-    pointer-events:none;
-    opacity:0;
-    transition:opacity .3s;
-  }
-  .music-label.show{opacity:1;}
-
   footer{
     position:fixed;bottom:14px;left:0;right:0;
     text-align:center;
@@ -234,7 +200,6 @@
 
   @media (prefers-reduced-motion: reduce){
     .card{animation:none;}
-    .avatar-wrap{animation:none;}
   }
 </style>
 </head>
@@ -243,23 +208,17 @@
 <div class="vignette"></div>
 <canvas id="fx"></canvas>
 
-<!-- ============ MUSIC ============ -->
-<!-- Replace the src below with your own hosted mp3/ogg link (e.g. upload to GitHub raw, Catbox, or your own CDN). -->
+<!-- ============ MUSIC (plays silently in background, no visible icon/button) ============ -->
 <audio id="bgm" loop preload="none">
-  <source src="https://raw.githubusercontent.com/unity-cpu/gaybez-is-gay/main/really cool music aka chill zone.mp3" type="audio/mpeg">
+  <source src="https://raw.githubusercontent.com/unity-cpu/gaybez-is-gay/main/really%20cool%20music%20aka%20chill%20zone.mp3" type="audio/mpeg">
 </audio>
-<button class="music-btn paused" id="musicBtn" title="play music" aria-label="toggle background music">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-  </svg>
-</button>
-<div class="music-label" id="musicLabel">tap anywhere to unmute</div>
 
 <div class="card">
   <div class="avatar-wrap">
-    <img class="avatar" src="https://cdn.discordapp.com/attachments/1531488818841129010/1531904074927046736/917e17f923a155b858eaaf70c83c4531.webp?ex=6a6ae858&is=6a6996d8&hm=d05b0b55e3bf8c7f4285180a0f5473662e0d380a867bb59f578109dfaa40a667&" alt="avatar">
+    <img class="avatar" src="https://media.discordapp.net/attachments/1531488818841129010/1531904074927046736/917e17f923a155b858eaaf70c83c4531.webp?ex=6a6ae858&is=6a6996d8&hm=d05b0b55e3bf8c7f4285180a0f5473662e0d380a867bb59f578109dfaa40a667&=&format=webp" alt="avatar">
   </div>
 
-  <h1>Unity!</h1>
+  <h1 id="sweepTitle">Unity!</h1>
 
   <button class="discord-btn" id="discordBtn">
     <svg viewBox="0 0 24 24" fill="none"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.362 1.225 1.994a.077.077 0 0 0 .084.028 19.84 19.84 0 0 0 6.001-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028ZM8.02 15.33c-1.183 0-2.157-1.086-2.157-2.42 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.42-2.157 2.42Zm7.975 0c-1.183 0-2.157-1.086-2.157-2.42 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.42-2.157 2.42Z" fill="#B084F5"/></svg>
@@ -287,7 +246,7 @@
 
   <div class="panel" id="panel-about">
     <div class="panel-inner about-text">
-      <p><b>im unity !</b></p>
+      <p><b>im unit !</b></p>
       <p>I like listening to music and I love cats.</p>
       <p>I like to code (experienced skid)</p>
     </div>
@@ -306,7 +265,6 @@
 
 <script>
   // ============ CONFIG: discord invites ============
-  // add/remove as many as you want
   const INVITES = [
     { label: "apk studio", url: "https://discord.gg/J2ezjghdBN" },
     { label: "cgh", url: "https://discord.gg/npD2H4AFc2" },
@@ -364,49 +322,21 @@
     });
   });
 
-  // ============ MUSIC PLAYER ============
-  // Browsers flat-out block autoplay WITH sound — no way around that.
-  // Workaround every bio-site uses: autoplay muted on load, then unmute
-  // on the first click/tap/keypress anywhere on the page. Feels like autoplay.
+  // ============ MUSIC (background, no visible control) ============
+  // Browsers block autoplay WITH sound, no way around that. Standard
+  // workaround: autoplay muted on load, unmute on first user interaction
+  // anywhere on the page (click/tap/keypress).
   const bgm = document.getElementById('bgm');
-  const musicBtn = document.getElementById('musicBtn');
-  const musicLabel = document.getElementById('musicLabel');
-  let playing = false;
   let unmutedYet = false;
-  let labelTimeout;
 
-  function flashLabel(text){
-    musicLabel.textContent = text;
-    musicLabel.classList.add('show');
-    clearTimeout(labelTimeout);
-    labelTimeout = setTimeout(() => musicLabel.classList.remove('show'), 1800);
-  }
-
-  function setPlayingUI(isPlaying){
-    playing = isPlaying;
-    musicBtn.classList.toggle('paused', !isPlaying);
-    musicBtn.title = isPlaying ? 'pause music' : 'play music';
-  }
-
-  // try muted autoplay immediately on load
   bgm.muted = true;
-  bgm.play().then(() => {
-    setPlayingUI(true);
-  }).catch(() => {
-    setPlayingUI(false);
-  });
+  bgm.play().catch(() => {});
 
-  // unmute on the very first user interaction anywhere on the page
   function unmuteOnFirstInteraction(){
     if (unmutedYet) return;
     unmutedYet = true;
     bgm.muted = false;
-    if (bgm.paused){
-      bgm.play().then(() => { setPlayingUI(true); flashLabel('now playing'); })
-                .catch(() => {});
-    } else {
-      flashLabel('now playing');
-    }
+    if (bgm.paused) bgm.play().catch(() => {});
     window.removeEventListener('click', unmuteOnFirstInteraction);
     window.removeEventListener('keydown', unmuteOnFirstInteraction);
     window.removeEventListener('touchstart', unmuteOnFirstInteraction);
@@ -415,25 +345,54 @@
   window.addEventListener('keydown', unmuteOnFirstInteraction);
   window.addEventListener('touchstart', unmuteOnFirstInteraction);
 
-  // manual toggle button still works on top of all that
-  musicBtn.addEventListener('click', async (e) => {
-    e.stopPropagation();
-    unmuteOnFirstInteraction();
-    if (!playing){
-      try{
-        await bgm.play();
-        setPlayingUI(true);
-        flashLabel('now playing');
-      }catch(err){
-        flashLabel('add your audio url first');
-        console.warn('Music failed to play — set a real src on the #bgm <source> tag.', err);
-      }
-    } else {
-      bgm.pause();
-      setPlayingUI(false);
-      flashLabel('paused');
-    }
+  // ============ SWEEP TEXT ANIMATOR ============
+  // Ported from the Unity C# SweepTextAnimator: for each character, lerp
+  // between colorA (purple) and colorB (white) based on a moving offset
+  // so a "wave" of color sweeps across the text on a loop.
+  const sweepTitle = document.getElementById('sweepTitle');
+  const sweepContent = sweepTitle.textContent;
+  sweepTitle.innerHTML = '';
+  const sweepSpans = [...sweepContent].map(ch => {
+    const span = document.createElement('span');
+    span.textContent = ch;
+    sweepTitle.appendChild(span);
+    return span;
   });
+
+  const SWEEP_DURATION = 2.5;   // seconds, matches `duration` in the C# script
+  const SWEEP_SPEED = 1.0;      // matches `speed`
+  const COLOR_A = [141, 92, 255];   // purple, matches colorA (0.553, 0.361, 1.0)
+  const COLOR_B = [255, 255, 255];  // white, matches colorB
+
+  function lerp(a, b, t){ return a + (b - a) * t; }
+  function repeat(t, length){ return t - Math.floor(t / length) * length; }
+
+  let sweepStart = performance.now();
+  function sweepTick(now){
+    const timer = ((now - sweepStart) / 1000) * SWEEP_SPEED;
+    const len = sweepSpans.length;
+    sweepSpans.forEach((span, i) => {
+      const offset = (timer / SWEEP_DURATION) - (i / len);
+      const normalized = Math.abs(repeat(offset, 1.0) * 2.0 - 1.0);
+      const r = Math.round(lerp(COLOR_A[0], COLOR_B[0], normalized));
+      const g = Math.round(lerp(COLOR_A[1], COLOR_B[1], normalized));
+      const b = Math.round(lerp(COLOR_A[2], COLOR_B[2], normalized));
+      span.style.color = `rgb(${r},${g},${b})`;
+    });
+    requestAnimationFrame(sweepTick);
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    sweepSpans.forEach((span, i) => {
+      const t = i / Math.max(sweepSpans.length - 1, 1);
+      const r = Math.round(lerp(COLOR_B[0], COLOR_A[0], t));
+      const g = Math.round(lerp(COLOR_B[1], COLOR_A[1], t));
+      const b = Math.round(lerp(COLOR_B[2], COLOR_A[2], t));
+      span.style.color = `rgb(${r},${g},${b})`;
+    });
+  } else {
+    requestAnimationFrame(sweepTick);
+  }
 
   // faint drifting particles on black bg
   const canvas = document.getElementById('fx');
