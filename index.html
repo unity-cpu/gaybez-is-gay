@@ -259,16 +259,16 @@
 <!-- ============ MUSIC ============ -->
 <!-- Replace the src below with your own hosted mp3/ogg link (e.g. upload to GitHub raw, Catbox, or your own CDN). -->
 <audio id="bgm" loop preload="none">
-  <source src="https://raw.githubusercontent.com/unity-cpu/gaybez-is-gay/main/really cool music aka chill zone.mp3" type="audio/mpeg">
+  <source src="REPLACE_WITH_YOUR_AUDIO_URL.mp3" type="audio/mpeg">
 </audio>
 <button class="music-btn paused" id="musicBtn" title="play music" aria-label="toggle background music">
   <div class="bars"><span></span><span></span><span></span></div>
 </button>
-<div class="music-label" id="musicLabel">click to play music</div>
+<div class="music-label" id="musicLabel">tap anywhere to unmute</div>
 
 <div class="card">
   <div class="avatar-wrap">
-    <img class="avatar" src="https://media.discordapp.net/attachments/1522724774944706665/1526296797151100970/heist.gif" alt="avatar">
+    <img class="avatar" src="https://cdn.discordapp.com/attachments/1531488818841129010/1531904074927046736/917e17f923a155b858eaaf70c83c4531.webp?ex=6a6ae858&is=6a6996d8&hm=d05b0b55e3bf8c7f4285180a0f5473662e0d380a867bb59f578109dfaa40a667&" alt="avatar">
   </div>
 
   <h1>Unity!</h1>
@@ -377,11 +377,14 @@
   });
 
   // ============ MUSIC PLAYER ============
-  // browsers block autoplay-with-sound, so playback starts on first click of the button
+  // Browsers flat-out block autoplay WITH sound — no way around that.
+  // Workaround every bio-site uses: autoplay muted on load, then unmute
+  // on the first click/tap/keypress anywhere on the page. Feels like autoplay.
   const bgm = document.getElementById('bgm');
   const musicBtn = document.getElementById('musicBtn');
   const musicLabel = document.getElementById('musicLabel');
   let playing = false;
+  let unmutedYet = false;
   let labelTimeout;
 
   function flashLabel(text){
@@ -391,23 +394,55 @@
     labelTimeout = setTimeout(() => musicLabel.classList.remove('show'), 1800);
   }
 
-  musicBtn.addEventListener('click', async () => {
+  function setPlayingUI(isPlaying){
+    playing = isPlaying;
+    musicBtn.classList.toggle('paused', !isPlaying);
+    musicBtn.title = isPlaying ? 'pause music' : 'play music';
+  }
+
+  // try muted autoplay immediately on load
+  bgm.muted = true;
+  bgm.play().then(() => {
+    setPlayingUI(true);
+  }).catch(() => {
+    setPlayingUI(false);
+  });
+
+  // unmute on the very first user interaction anywhere on the page
+  function unmuteOnFirstInteraction(){
+    if (unmutedYet) return;
+    unmutedYet = true;
+    bgm.muted = false;
+    if (bgm.paused){
+      bgm.play().then(() => { setPlayingUI(true); flashLabel('now playing'); })
+                .catch(() => {});
+    } else {
+      flashLabel('now playing');
+    }
+    window.removeEventListener('click', unmuteOnFirstInteraction);
+    window.removeEventListener('keydown', unmuteOnFirstInteraction);
+    window.removeEventListener('touchstart', unmuteOnFirstInteraction);
+  }
+  window.addEventListener('click', unmuteOnFirstInteraction);
+  window.addEventListener('keydown', unmuteOnFirstInteraction);
+  window.addEventListener('touchstart', unmuteOnFirstInteraction);
+
+  // manual toggle button still works on top of all that
+  musicBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    unmuteOnFirstInteraction();
     if (!playing){
       try{
         await bgm.play();
-        playing = true;
-        musicBtn.classList.remove('paused');
-        musicBtn.title = 'pause music';
+        setPlayingUI(true);
         flashLabel('now playing');
-      }catch(e){
+      }catch(err){
         flashLabel('add your audio url first');
-        console.warn('Music failed to play — set a real src on the #bgm <source> tag.', e);
+        console.warn('Music failed to play — set a real src on the #bgm <source> tag.', err);
       }
     } else {
       bgm.pause();
-      playing = false;
-      musicBtn.classList.add('paused');
-      musicBtn.title = 'play music';
+      setPlayingUI(false);
       flashLabel('paused');
     }
   });
